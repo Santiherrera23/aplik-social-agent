@@ -111,7 +111,7 @@ export async function save_content({
       cta,
       imagen_url,
       imagen_prompt,
-      qa_score,
+      qa_score: qa_score ? Math.round(qa_score) : null,
       qa_feedback,
       plan_id,
       estado: "draft",
@@ -198,15 +198,23 @@ export async function upload_media_to_publer({ image_url }) {
 export async function create_publer_draft({ account_ids, content, media_ids, scheduled_at }) {
   console.log(`📝 Creando draft en Publer para ${account_ids.length} cuenta(s)`);
 
+  // Build the networks object - use "status" type for text-only posts
+  const networks = {};
+  // We'll set a generic status for all networks - Publer routes to the right one via account IDs
+  networks.facebook = { type: "status", text: content };
+  networks.instagram = { type: "status", text: content };
+  networks.twitter = { type: "status", text: content };
+  networks.tiktok = { type: "status", text: content };
+
   const body = {
     bulk: {
       state: "draft",
-      posts: [{
-        text: content,
-        media_urls: (media_ids && media_ids.length > 0) ? media_ids : undefined,
-        networks: {}
-      }],
-      accounts: account_ids.map(id => ({ id }))
+      posts: [
+        {
+          networks,
+          accounts: account_ids.map(id => ({ id })),
+        }
+      ]
     }
   };
 
@@ -222,8 +230,8 @@ export async function create_publer_draft({ account_ids, content, media_ids, sch
   }
 
   const data = await res.json();
-  console.log(`✅ Draft creado en Publer`);
-  return { post_id: data.id, status: data.status || "draft" };
+  console.log(`✅ Draft creado en Publer — Job ID: ${data?.data?.job_id || "unknown"}`);
+  return { job_id: data?.data?.job_id, success: data?.success, status: "draft" };
 }
 
 // =============================================
