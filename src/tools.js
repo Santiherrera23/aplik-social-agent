@@ -21,7 +21,8 @@ function supabaseHeaders() {
 
 function publerHeaders() {
   return {
-    Authorization: `Bearer ${PUBLER_KEY}`,
+    "Authorization": `Bearer-API ${PUBLER_KEY}`,
+    "Publer-Workspace-Id": process.env.PUBLER_WORKSPACE_ID || "",
     "Content-Type": "application/json",
   };
 }
