@@ -45,6 +45,7 @@ export async function generate_image({ prompt, size = "1024x1024" }) {
       prompt,
       n: 1,
       size,
+      response_format: "url",
     }),
   });
 
@@ -54,13 +55,9 @@ export async function generate_image({ prompt, size = "1024x1024" }) {
   }
 
   const data = await res.json();
-
-  // gpt-image-1 returns base64 by default
-  const imageData = data.data[0];
-  const imageUrl = imageData.url || `data:image/png;base64,${imageData.b64_json}`;
-
-  console.log(`✅ Imagen generada exitosamente`);
-  return { image_url: imageUrl, revised_prompt: imageData.revised_prompt || prompt };
+  const imageUrl = data.data[0].url;
+  console.log("✅ Imagen generada exitosamente");
+  return { image_url: imageUrl };
 }
 
 // =============================================
