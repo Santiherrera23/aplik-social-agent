@@ -2,7 +2,7 @@
 // Implementaciones de herramientas del agente
 // =============================================
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_URL = (process.env.SUPABASE_URL || "").replace(/\/+$/, "").trim();
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const PUBLER_KEY = process.env.PUBLER_API_KEY;
 const PUBLER_WORKSPACE = process.env.PUBLER_WORKSPACE_ID;
@@ -41,7 +41,7 @@ export async function generate_image({ prompt, size = "1024x1024" }) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "gpt-image-1",
+      model: "dall-e-3",
       prompt,
       n: 1,
       size,
@@ -179,22 +179,8 @@ export async function get_publer_accounts() {
 // Sube una imagen a Publer desde URL
 // =============================================
 export async function upload_media_to_publer({ image_url }) {
-  console.log(`📤 Subiendo imagen a Publer`);
-
-  const res = await fetch("https://app.publer.com/api/v1/media/upload_from_url", {
-    method: "POST",
-    headers: publerHeaders(),
-    body: JSON.stringify({ url: image_url }),
-  });
-
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Publer media upload error: ${res.status} — ${err}`);
-  }
-
-  const data = await res.json();
-  console.log(`✅ Media subida — ID: ${data.id || data.media_id || "unknown"}`);
-  return { media_id: data.id || data.media_id, media_url: data.url };
+  console.log("📤 Imagen URL lista para Publer");
+  return { media_url: image_url, media_id: image_url };
 }
 
 // =============================================
@@ -210,7 +196,7 @@ export async function create_publer_draft({ account_ids, content, media_ids, sch
     is_draft: true,
   };
 
-  if (media_ids && media_ids.length > 0) body.media_ids = media_ids;
+  if (media_ids && media_ids.length > 0) body.media_urls = media_ids;
   if (scheduled_at) {
     body.is_draft = false;
     body.scheduled_at = scheduled_at;
