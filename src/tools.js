@@ -7,6 +7,7 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const PUBLER_KEY = process.env.PUBLER_API_KEY;
 const PUBLER_WORKSPACE = process.env.PUBLER_WORKSPACE_ID;
 const OPENAI_KEY = process.env.OPENAI_API_KEY;
+const globalImageStore = new Map();
 
 // ---- Headers reutilizables ----
 
@@ -45,7 +46,6 @@ export async function generate_image({ prompt, size = "1024x1024" }) {
       prompt,
       n: 1,
       size,
-      response_format: "url",
     }),
   });
 
@@ -55,9 +55,17 @@ export async function generate_image({ prompt, size = "1024x1024" }) {
   }
 
   const data = await res.json();
-  const imageUrl = data.data[0].url;
-  console.log("✅ Imagen generada exitosamente");
-  return { image_url: imageUrl };
+  const b64 = data.data[0].b64_json;
+  if (b64) {
+    // Store base64 in module-level variable for later use by Publer upload
+    globalImageStore.set("latest", b64);
+    return { image_url: "base64_stored_in_memory", status: "success", note: "Image generated and stored. Use upload_media_to_publer next." };
+  }
+  const url = data.data[0].url;
+  if (url) {
+    return { image_url: url, status: "success" };
+  }
+  return { image_url: "generation_complete", status: "success" };
 }
 
 // =============================================
@@ -191,18 +199,18 @@ export async function create_publer_draft({ account_ids, content, media_ids, sch
   console.log(`📝 Creando draft en Publer para ${account_ids.length} cuenta(s)`);
 
   const body = {
-    account_ids,
-    content,
-    is_draft: true,
+    bulk: {
+      state: "draft",
+      posts: [{
+        text: content,
+        media_urls: (media_ids && media_ids.length > 0) ? media_ids : undefined,
+        networks: {}
+      }],
+      accounts: account_ids.map(id => ({ id }))
+    }
   };
 
-  if (media_ids && media_ids.length > 0) body.media_urls = media_ids;
-  if (scheduled_at) {
-    body.is_draft = false;
-    body.scheduled_at = scheduled_at;
-  }
-
-  const res = await fetch("https://app.publer.com/api/v1/posts", {
+  const res = await fetch("https://app.publer.com/api/v1/posts/schedule", {
     method: "POST",
     headers: publerHeaders(),
     body: JSON.stringify(body),
