@@ -42,7 +42,7 @@ export async function generate_image({ prompt, size = "1024x1024" }) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "dall-e-3",
+      model: "gpt-image-2",
       prompt,
       n: 1,
       size,
