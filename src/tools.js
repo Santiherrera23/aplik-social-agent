@@ -169,7 +169,7 @@ export async function get_publer_accounts() {
   const summary = accounts.map((a) => ({
     id: a.id,
     name: a.name,
-    platform: a.platform,
+    platform: a.provider,
     username: a.username,
   }));
 
