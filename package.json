@@ -1,0 +1,16 @@
+{
+  "name": "aplik-social-agent",
+  "version": "1.0.0",
+  "description": "Agente Community Manager autónomo para Aplik — Claude API + Publer + OpenAI",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node src/test-pipeline.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "node-cron": "^3.0.3",
+    "dotenv": "^16.4.7"
+  }
+}
