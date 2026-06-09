@@ -8,7 +8,7 @@ import { getSystemPrompt } from "./brand-config.js";
 
 const client = new Anthropic();
 const MODEL = "claude-sonnet-4-20250514";
-const MAX_TURNS = 15;
+const MAX_TURNS = 25;
 
 /**
  * Ejecuta el agente con una tarea específica.
