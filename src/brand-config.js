@@ -122,6 +122,6 @@ CRITICAL IMAGE RULES:
 - Images must be professional, minimalista, with brand color ${brand.colors.primary}
 - NO real people, NO copyrighted characters
 - Format: PNG, max 8MB
-- Any text or lettering INSIDE generated images MUST be in English (AI renders English text more accurately)
-- Image prompts must ALWAYS be written in English`;
+- Any text or lettering INSIDE generated images MUST be in SPANISH (the audience is Colombian/Latin American)
+- Image generation prompts must be written in English for the AI, but any visible text rendered in the image itself must be in Spanish`;
 }
