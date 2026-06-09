@@ -43,51 +43,22 @@ function randomDelay(minMinutes, maxMinutes) {
 // Colombia = UTC-5
 // =============================================
 
-// 🌅 MAÑANA: 8:30 AM Colombia = 1:30 PM UTC
-// Cron dispara a las 1:30 PM UTC, delay aleatorio 0-30 min (8:30-9:00 AM COL)
-cron.schedule("30 13 * * *", async () => {
-  const delay = Math.floor(Math.random() * 30);
-  console.log(`\n🌅 [CRON] Franja MAÑANA — esperando ${delay} min para variedad`);
-  await randomDelay(0, delay);
-
+// 🗓️ DAILY CONTENT: 7:00 AM Colombia = 12:00 PM UTC — generates ALL 3 batches for the day
+cron.schedule("0 12 * * *", async () => {
+  console.log("\n📋 [CRON] Generando contenido del día completo...");
   try {
+    console.log("🌅 Batch 1/3: Franja mañana");
     await runMultiPlatformContent("aplik", "mañana");
-    // Descomentar para segundo negocio:
-    // await runMultiPlatformContent("biz2", "mañana");
-  } catch (error) {
-    console.error("❌ Error en franja mañana:", error.message);
-  }
-});
 
-// ☀️ TARDE: 12:00 PM Colombia = 5:00 PM UTC
-// Cron dispara a las 5:00 PM UTC, delay aleatorio 0-180 min (12:00-3:00 PM COL)
-cron.schedule("0 17 * * *", async () => {
-  const delay = Math.floor(Math.random() * 180);
-  console.log(`\n☀️ [CRON] Franja TARDE — esperando ${delay} min para variedad`);
-  await randomDelay(0, delay);
-
-  try {
+    console.log("☀️ Batch 2/3: Franja tarde");
     await runMultiPlatformContent("aplik", "tarde");
-    // Descomentar para segundo negocio:
-    // await runMultiPlatformContent("biz2", "tarde");
-  } catch (error) {
-    console.error("❌ Error en franja tarde:", error.message);
-  }
-});
 
-// 🌙 NOCHE: 6:00 PM Colombia = 11:00 PM UTC
-// Cron dispara a las 11:00 PM UTC, delay aleatorio 0-120 min (6:00-8:00 PM COL)
-cron.schedule("0 23 * * *", async () => {
-  const delay = Math.floor(Math.random() * 120);
-  console.log(`\n🌙 [CRON] Franja NOCHE — esperando ${delay} min para variedad`);
-  await randomDelay(0, delay);
-
-  try {
+    console.log("🌙 Batch 3/3: Franja noche");
     await runMultiPlatformContent("aplik", "noche");
-    // Descomentar para segundo negocio:
-    // await runMultiPlatformContent("biz2", "noche");
+
+    console.log("✅ Los 9 posts del día están listos en Publer");
   } catch (error) {
-    console.error("❌ Error en franja noche:", error.message);
+    console.error("❌ Error generando contenido del día:", error.message);
   }
 });
 
@@ -115,13 +86,11 @@ cron.schedule("0 15 * * 6", async () => {
 });
 
 console.log("⏰ Cron jobs configurados (horario Colombia):");
-console.log("   🌅 Mañana:   8:30-9:00 AM  → IG + TikTok + X (misma imagen, 3 copies)");
-console.log("   ☀️ Tarde:    12:00-3:00 PM → IG + TikTok + X (misma imagen, 3 copies)");
-console.log("   🌙 Noche:    6:00-8:00 PM  → IG + TikTok + X (misma imagen, 3 copies)");
+console.log("   📋 Contenido diario: 7:00 AM (9 posts en 3 franjas)");
 console.log("   🗓️ Planning: Domingos 8PM");
-console.log("   📊 Reporte:  Sábados 10AM");
+console.log("   📊 Reporte: Sábados 10AM");
 console.log("");
-console.log("📊 Total: 9 posts/día (3 franjas × 3 plataformas)");
+console.log("📊 Rutina: Abre Publer a las 8AM, aprueba los 9 drafts, listo.");
 console.log("🟢 Agente activo y esperando...");
 console.log("");
 

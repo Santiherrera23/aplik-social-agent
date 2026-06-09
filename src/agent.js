@@ -122,6 +122,13 @@ export async function runMultiPlatformContent(brandKey = "aplik", franja = "mañ
 
   const task = `Hoy es ${today}. Genera contenido para la franja: ${franjaDescriptions[franja] || franja}
 
+HORA DE PUBLICACIÓN:
+- If franja is "mañana": set scheduled_at to today at a random time between 8:30 AM and 9:00 AM Colombia time (UTC-5)
+- If franja is "tarde": set scheduled_at to today at a random time between 12:00 PM and 3:00 PM Colombia time (UTC-5)
+- If franja is "noche": set scheduled_at to today at a random time between 6:00 PM and 8:00 PM Colombia time (UTC-5)
+
+When calling create_publer_draft, pass the scheduled_at parameter with the appropriate ISO 8601 timestamp for the franja.
+
 INSTRUCCIONES IMPORTANTES:
 1. PRIMERO consulta los posts recientes (get_recent_posts) para no repetir temas de los últimos días
 2. Elige UN tema relevante para esta franja horaria
