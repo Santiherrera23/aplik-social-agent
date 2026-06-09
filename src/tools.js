@@ -187,8 +187,37 @@ export async function get_publer_accounts() {
 // Sube una imagen a Publer desde URL
 // =============================================
 export async function upload_media_to_publer({ image_url }) {
-  console.log("📤 Imagen URL lista para Publer");
-  return { media_url: image_url, media_id: image_url };
+  console.log("📤 Subiendo imagen a Publer...");
+
+  const b64 = globalImageStore.get("latest");
+  if (!b64) {
+    console.log("⚠️ No hay imagen en memoria, usando pass-through");
+    return { media_id: null, media_url: image_url };
+  }
+
+  const buffer = Buffer.from(b64, "base64");
+  const blob = new Blob([buffer], { type: "image/png" });
+  const formData = new FormData();
+  formData.append("file", blob, "aplik-post.png");
+
+  const res = await fetch("https://app.publer.com/api/v1/media", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer-API ${PUBLER_KEY}`,
+      "Publer-Workspace-Id": process.env.PUBLER_WORKSPACE_ID || "",
+    },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Publer media upload error: ${res.status} — ${err}`);
+  }
+
+  const data = await res.json();
+  console.log(`✅ Imagen subida a Publer — Media ID: ${data.id}`);
+  globalImageStore.delete("latest");
+  return { media_id: data.id, media_url: data.path || data.thumbnail };
 }
 
 // =============================================
@@ -198,13 +227,22 @@ export async function upload_media_to_publer({ image_url }) {
 export async function create_publer_draft({ account_ids, content, media_ids, scheduled_at }) {
   console.log(`📝 Creando draft en Publer para ${account_ids.length} cuenta(s)`);
 
-  // Build the networks object - use "status" type for text-only posts
   const networks = {};
-  // We'll set a generic status for all networks - Publer routes to the right one via account IDs
-  networks.facebook = { type: "status", text: content };
-  networks.instagram = { type: "status", text: content };
-  networks.twitter = { type: "status", text: content };
-  networks.tiktok = { type: "status", text: content };
+  const hasMedia = media_ids && media_ids.length > 0 && media_ids[0] !== null;
+  const mediaArray = hasMedia ? [{ id: media_ids[0], type: "image" }] : undefined;
+  const postType = hasMedia ? "photo" : "status";
+
+  networks.facebook = { type: postType, text: content };
+  networks.instagram = { type: postType, text: content };
+  networks.twitter = { type: postType, text: content };
+  networks.tiktok = { type: postType, text: content };
+
+  if (mediaArray) {
+    networks.facebook.media = mediaArray;
+    networks.instagram.media = mediaArray;
+    networks.twitter.media = mediaArray;
+    networks.tiktok.media = mediaArray;
+  }
 
   const body = {
     bulk: {
