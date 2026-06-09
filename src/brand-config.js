@@ -2,6 +2,8 @@
 // Configuración de marca por negocio
 // =============================================
 
+import { getPlatformRulesForPrompt } from "./publer-platform-rules.js";
+
 export const BRANDS = {
   aplik: {
     name: "Aplik",
@@ -110,5 +112,14 @@ Cuando generes contenido, responde SIEMPRE en JSON válido con esta estructura:
   "cta": "el call to action",
   "image_prompt": "prompt en INGLÉS para generar la imagen con IA — debe ser minimalista, profesional, usar el color ${brand.colors.primary}, sin personas reales, ideal para redes sociales",
   "reasoning": "breve explicación de por qué esta variante funciona"
-}`;
+}
+
+PLATFORM RESTRICTIONS (from Publer API — MUST respect these limits):
+${getPlatformRulesForPrompt(["instagram", "tiktok", "facebook", "linkedin", "twitter"])}
+
+CRITICAL IMAGE RULES:
+- Generate images at 1024x1024 (square) — works across all platforms
+- Images must be professional, minimalista, with brand color ${brand.colors.primary}
+- NO real people, NO copyrighted characters
+- Format: PNG, max 8MB`;
 }
