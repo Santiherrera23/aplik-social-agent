@@ -212,7 +212,17 @@ export async function create_publer_draft({ account_ids, content, media_ids, sch
       posts: [
         {
           networks,
-          accounts: account_ids.map(id => ({ id })),
+          accounts: account_ids.map(id => {
+            const acc = { id };
+            if (scheduled_at) {
+              acc.scheduled_at = scheduled_at;
+            } else {
+              // Default: schedule 1 hour from now
+              const defaultTime = new Date(Date.now() + 60 * 60 * 1000);
+              acc.scheduled_at = defaultTime.toISOString();
+            }
+            return acc;
+          }),
         }
       ]
     }
