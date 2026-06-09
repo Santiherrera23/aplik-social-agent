@@ -36,7 +36,7 @@ export const BRANDS = {
       instagram: "Visual, emoji-friendly, hooks fuertes, carruseles educativos. Hashtags relevantes del mercado laboral colombiano.",
       tiktok: "Hook en los primeros 2 segundos, casual, trend-aware, storytelling rápido. Usar 'parcero', 'marica' (suave), expresiones colombianas.",
       linkedin: "Profesional pero cercano, datos y estadísticas, thought leadership sobre empleo en Colombia. Sin ser corporativo genérico.",
-      x: "Opiniones fuertes sobre el mercado laboral, tips rápidos, engagement con comentarios. Máximo 280 caracteres.",
+      facebook: "Tono cercano y educativo, más detalle que Instagram, links permitidos, emojis moderados.",
     },
     cta: "Empieza gratis en aplik.com.co",
     content_pillars: [
@@ -55,7 +55,7 @@ export const BRANDS = {
     publer_accounts: {
       instagram: process.env.PUBLER_ACCOUNT_INSTAGRAM_APLIK,
       tiktok: process.env.PUBLER_ACCOUNT_TIKTOK_APLIK,
-      x: process.env.PUBLER_ACCOUNT_X_APLIK,
+      facebook: process.env.PUBLER_ACCOUNT_FACEBOOK_APLIK,
     },
   },
 
@@ -103,7 +103,7 @@ REGLAS DE CONTENIDO:
    - Instagram: ${brand.tone.instagram}
    - TikTok: ${brand.tone.tiktok}
    - LinkedIn: ${brand.tone.linkedin}
-   - X/Twitter: ${brand.tone.x}
+   - Facebook: ${brand.tone.facebook}
 
 Cuando generes contenido, responde SIEMPRE en JSON válido con esta estructura:
 {
@@ -121,5 +121,7 @@ CRITICAL IMAGE RULES:
 - Generate images at 1024x1024 (square) — works across all platforms
 - Images must be professional, minimalista, with brand color ${brand.colors.primary}
 - NO real people, NO copyrighted characters
-- Format: PNG, max 8MB`;
+- Format: PNG, max 8MB
+- Any text or lettering INSIDE generated images MUST be in English (AI renders English text more accurately)
+- Image prompts must ALWAYS be written in English`;
 }

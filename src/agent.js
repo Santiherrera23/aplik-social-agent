@@ -130,7 +130,7 @@ INSTRUCCIONES IMPORTANTES:
 
    📸 INSTAGRAM: Copy más largo, visual, con emojis, 5-8 hashtags relevantes al final
    🎵 TIKTOK: Copy corto y punchy, hook fuerte, 3-5 hashtags trending, tono casual colombiano
-   🐦 X/TWITTER: Máximo 280 caracteres, opinión fuerte o tip directo, 2-3 hashtags
+   📘 FACEBOOK: Copy educativo y detallado, links permitidos, emojis moderados, 1-3 hashtags
 
 5. Cada copy DEBE incluir hashtags relevantes y un CTA
 6. Los 3 copies deben hablar del MISMO tema pero con el tono y formato de cada plataforma
