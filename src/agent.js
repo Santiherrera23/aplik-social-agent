@@ -32,6 +32,8 @@ export async function runAgent(task, brandKey = "aplik") {
 
   let turns = 0;
   let finalResponse = null;
+  let totalInputTokens = 0;
+  let totalOutputTokens = 0;
 
   while (turns < MAX_TURNS) {
     turns++;
@@ -48,6 +50,11 @@ export async function runAgent(task, brandKey = "aplik") {
 
       const assistantContent = response.content;
       messages.push({ role: "assistant", content: assistantContent });
+
+      if (response.usage) {
+        totalInputTokens += response.usage.input_tokens || 0;
+        totalOutputTokens += response.usage.output_tokens || 0;
+      }
 
       if (response.stop_reason === "end_turn") {
         const textBlocks = assistantContent.filter((b) => b.type === "text");
@@ -94,11 +101,25 @@ export async function runAgent(task, brandKey = "aplik") {
   console.log(finalResponse);
   console.log("=".repeat(60) + "\n");
 
+  const inputCost = (totalInputTokens / 1000000) * 3;
+  const outputCost = (totalOutputTokens / 1000000) * 15;
+  const totalCost = inputCost + outputCost;
+
+  console.log("\n" + "=".repeat(60));
+  console.log("💰 CONSUMO DE TOKENS (Anthropic):");
+  console.log(`   Input:  ${totalInputTokens.toLocaleString()} tokens`);
+  console.log(`   Output: ${totalOutputTokens.toLocaleString()} tokens`);
+  console.log(`   Costo:  $${totalCost.toFixed(4)} USD (~$${(totalCost * 4000).toFixed(0)} COP)`);
+  console.log("=".repeat(60));
+
   return {
     success: turns < MAX_TURNS,
     turns,
     response: finalResponse,
     brand: brandKey,
+    input_tokens: totalInputTokens,
+    output_tokens: totalOutputTokens,
+    cost_usd: totalCost,
   };
 }
 
