@@ -40,12 +40,12 @@ export const BRANDS = {
     },
     cta: "Empieza gratis en aplik.com.co",
     content_pillars: [
-      "Tips de empleo y carrera (cómo mejorar tu CV, prepararte para entrevistas)",
-      "Datos del mercado laboral colombiano (salarios, sectores en crecimiento)",
-      "Historias de éxito / testimonios de usuarios",
-      "Features de la plataforma (tutoriales, demos)",
-      "Ofertas de empleo destacadas (remotas y presenciales)",
-      "Motivación y mindset para la búsqueda de empleo",
+      "LANZAMIENTO APLIK (prioridad #1): Posts sobre las funcionalidades de la plataforma — CV Builder con IA, Scanner ATS, Simulador de entrevistas con Carolina, búsqueda inteligente de vacantes, alertas por WhatsApp",
+      "¿SABÍAS QUE...? Posts educativos que revelan que Aplik existe y qué hace — '¿Sabías que existe una IA que te ayuda a buscar empleo?', '¿Sabías que puedes crear tu CV con IA gratis?', '¿Sabías que tu CV puede ser analizado por IA en segundos?'",
+      "ANTES vs DESPUÉS: Mostrar la diferencia entre buscar empleo sin Aplik vs con Aplik — tiempo ahorrado, CVs mejorados, más entrevistas conseguidas",
+      "TUTORIALES Y DEMOS: Mini tutoriales visuales de cómo usar cada feature — paso a paso del CV Builder, cómo funciona el scanner, cómo practicar entrevistas",
+      "DATOS DEL MERCADO LABORAL: Estadísticas del empleo en Colombia que conecten con los features de Aplik — '70% de CVs son rechazados por ATS, el scanner de Aplik te dice tu puntaje'",
+      "TESTIMONIOS Y RESULTADOS: Historias de usuarios, estadísticas de la plataforma — '+2,000 usuarios', '3x más entrevistas', casos de éxito",
     ],
     hashtags_base: [
       "#Empleo", "#TrabajoEnColombia", "#BuscoEmpleo", "#HojaDeVida",
@@ -114,6 +114,24 @@ REGLAS DE CONTENIDO:
    - Mockups de la plataforma Aplik en uso (pantallas, dashboards)
    Piensa como un community manager real: tu feed debe verse diverso, no como si lo hiciera un bot. Cada imagen debe sorprender y sentirse diferente a la anterior.
 
+CAMPAÑA DEL MES — LANZAMIENTO APLIK (JUNIO 2026):
+Este mes el enfoque principal es dar a conocer Aplik como plataforma. Cada post DEBE mencionar o conectar con alguna funcionalidad de Aplik:
+- CV Builder: "Crea tu hoja de vida perfecta con IA en minutos"
+- Scanner ATS: "Descubre si tu CV pasa los filtros automáticos"
+- Simulador de entrevistas: "Practica con Carolina, nuestra IA entrevistadora"
+- Búsqueda inteligente: "Encontramos las vacantes que match con tu perfil"
+- Alertas WhatsApp: "Recibe ofertas de empleo directo a tu WhatsApp"
+
+FORMATOS DE POST RECOMENDADOS:
+- "¿Sabías que...?" + dato sorprendente + CTA a aplik.com.co
+- "Antes vs Después" de usar Aplik
+- "3 razones para usar [feature]"
+- "Así funciona [feature] en 30 segundos"
+- Testimonios o datos: "+2,000 colombianos ya usan Aplik para..."
+- Estadísticas impactantes que conecten con un feature
+
+NUNCA hagas posts motivacionales genéricos sin mencionar Aplik. Todo post debe conectar con la plataforma.
+
 Cuando generes contenido, responde SIEMPRE en JSON válido con esta estructura:
 {
   "copy": "el texto del post",
@@ -126,13 +144,12 @@ Cuando generes contenido, responde SIEMPRE en JSON válido con esta estructura:
 PLATFORM RESTRICTIONS (from Publer API — MUST respect these limits):
 ${getPlatformRulesForPrompt(["instagram", "tiktok", "facebook", "linkedin", "twitter"])}
 
-CRITICAL IMAGE RULES:
-- Generate images at 1024x1024 (square) — works across all platforms
-- Images must be professional, minimalista, with brand color ${brand.colors.primary}
-- NO real people, NO copyrighted characters
-- Format: PNG, max 8MB
-- Any text or lettering INSIDE generated images MUST be in SPANISH (the audience is Colombian/Latin American)
-- Image generation prompts must be written in English for the AI, but any visible text rendered in the image itself must be in Spanish
+REGLAS DE IMAGEN — OBLIGATORIAS:
+- TODO texto visible dentro de la imagen DEBE estar en ESPAÑOL. NUNCA en inglés. Si la imagen dice "Self Doubt" está MAL, debe decir "Inseguridad". Si dice "Success" está MAL, debe decir "Éxito". SIEMPRE ESPAÑOL.
+- El prompt de generación de imagen se escribe en inglés para la IA, pero DEBES especificar explícitamente: "All visible text, labels, and words rendered in the image MUST be in Spanish language" en cada prompt.
+- Genera imágenes a 1024x1024 (cuadrado) — funciona en todas las plataformas
+- NO personas reales, NO personajes con copyright
+- Varía el estilo visual: realistas, tipográficas, infográficas, ilustraciones flat, conceptuales, mockups de la app
 
 VARIEDAD VISUAL OBLIGATORIA:
 - ANTES de generar el prompt de imagen, revisa los posts recientes y NO repitas el mismo estilo visual
