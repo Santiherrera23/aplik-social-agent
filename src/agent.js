@@ -23,6 +23,12 @@ export async function runAgent(task, brandKey = "aplik") {
 
   const systemPrompt = getSystemPrompt(brandKey);
 
+  const cachedTools = TOOL_DEFINITIONS.map((t, i) =>
+    i === TOOL_DEFINITIONS.length - 1
+      ? { ...t, cache_control: { type: "ephemeral" } }
+      : t
+  );
+
   const messages = [
     {
       role: "user",
@@ -43,8 +49,8 @@ export async function runAgent(task, brandKey = "aplik") {
       const response = await client.messages.create({
         model: MODEL,
         max_tokens: 4096,
-        system: systemPrompt,
-        tools: TOOL_DEFINITIONS,
+        system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
+        tools: cachedTools,
         messages,
       });
 

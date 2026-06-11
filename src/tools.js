@@ -72,10 +72,10 @@ export async function generate_image({ prompt, size = "1024x1024" }) {
 // TOOL: get_recent_posts
 // Consulta posts recientes en Supabase para evitar repetición
 // =============================================
-export async function get_recent_posts({ negocio, plataforma, limit = 10 }) {
+export async function get_recent_posts({ negocio, plataforma, limit = 5 }) {
   console.log(`📋 Consultando últimos ${limit} posts de ${negocio} en ${plataforma}`);
 
-  let url = `${SUPABASE_URL}/rest/v1/contenido_generado?negocio=eq.${negocio}&order=created_at.desc&limit=${limit}`;
+  let url = `${SUPABASE_URL}/rest/v1/contenido_generado?negocio=eq.${negocio}&select=copy,plataforma,created_at&order=created_at.desc&limit=${limit}`;
   if (plataforma) url += `&plataforma=eq.${plataforma}`;
 
   const res = await fetch(url, { headers: supabaseHeaders() });
@@ -86,8 +86,13 @@ export async function get_recent_posts({ negocio, plataforma, limit = 10 }) {
   }
 
   const posts = await res.json();
-  console.log(`✅ Encontrados ${posts.length} posts recientes`);
-  return { posts, count: posts.length };
+  const trimmed = posts.map(p => ({
+    plataforma: p.plataforma,
+    fecha: p.created_at,
+    preview: (p.copy || "").substring(0, 120),
+  }));
+  console.log(`✅ Encontrados ${trimmed.length} posts recientes`);
+  return { posts: trimmed, count: trimmed.length };
 }
 
 // =============================================
@@ -291,7 +296,7 @@ export async function evaluate_content_quality({ copy, plataforma, negocio }) {
   // Esta herramienta es un "espejo" — devuelve el contenido para que Claude
   // lo evalúe en el siguiente turno con scoring
   return {
-    content_to_evaluate: copy,
+    content_to_evaluate: (copy || "").substring(0, 100),
     plataforma,
     negocio,
     evaluation_criteria: [
@@ -338,7 +343,7 @@ export const TOOL_DEFINITIONS = [
       properties: {
         negocio: { type: "string", description: "ID del negocio (ej: 'aplik')" },
         plataforma: { type: "string", description: "Plataforma (instagram, tiktok, linkedin, x)" },
-        limit: { type: "number", description: "Número de posts a consultar (default: 10)" },
+        limit: { type: "number", description: "Número de posts a consultar (default: 5)" },
       },
       required: ["negocio"],
     },
