@@ -40,6 +40,8 @@ export async function runAgent(task, brandKey = "aplik") {
   let finalResponse = null;
   let totalInputTokens = 0;
   let totalOutputTokens = 0;
+  let totalCacheCreationTokens = 0;
+  let totalCacheReadTokens = 0;
 
   while (turns < MAX_TURNS) {
     turns++;
@@ -60,6 +62,8 @@ export async function runAgent(task, brandKey = "aplik") {
       if (response.usage) {
         totalInputTokens += response.usage.input_tokens || 0;
         totalOutputTokens += response.usage.output_tokens || 0;
+        totalCacheCreationTokens += response.usage.cache_creation_input_tokens || 0;
+        totalCacheReadTokens += response.usage.cache_read_input_tokens || 0;
       }
 
       if (response.stop_reason === "end_turn") {
@@ -109,13 +113,18 @@ export async function runAgent(task, brandKey = "aplik") {
 
   const inputCost = (totalInputTokens / 1000000) * 3;
   const outputCost = (totalOutputTokens / 1000000) * 15;
-  const totalCost = inputCost + outputCost;
+  const cacheWriteCost = (totalCacheCreationTokens / 1000000) * 3.75;
+  const cacheReadCost = (totalCacheReadTokens / 1000000) * 0.30;
+  const totalCost = inputCost + outputCost + cacheWriteCost + cacheReadCost;
 
   console.log("\n" + "=".repeat(60));
   console.log("💰 CONSUMO DE TOKENS (Anthropic):");
-  console.log(`   Input:  ${totalInputTokens.toLocaleString()} tokens`);
-  console.log(`   Output: ${totalOutputTokens.toLocaleString()} tokens`);
-  console.log(`   Costo:  $${totalCost.toFixed(4)} USD (~$${(totalCost * 4000).toFixed(0)} COP)`);
+  console.log(`   Input normal:    ${totalInputTokens.toLocaleString()} tokens`);
+  console.log(`   Cache write:     ${totalCacheCreationTokens.toLocaleString()} tokens`);
+  console.log(`   Cache read:      ${totalCacheReadTokens.toLocaleString()} tokens (descuento 90%)`);
+  console.log(`   Output:          ${totalOutputTokens.toLocaleString()} tokens`);
+  console.log(`   ─────────────────────────────`);
+  console.log(`   Costo total:     $${totalCost.toFixed(4)} USD (~$${(totalCost * 4000).toFixed(0)} COP)`);
   console.log("=".repeat(60));
 
   return {
@@ -125,6 +134,8 @@ export async function runAgent(task, brandKey = "aplik") {
     brand: brandKey,
     input_tokens: totalInputTokens,
     output_tokens: totalOutputTokens,
+    cache_creation_tokens: totalCacheCreationTokens,
+    cache_read_tokens: totalCacheReadTokens,
     cost_usd: totalCost,
   };
 }
